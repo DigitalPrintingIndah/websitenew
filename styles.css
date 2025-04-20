@@ -260,13 +260,6 @@ ul {
   filter: drop-shadow(0 0 10px rgba(37, 99, 235, 0.3));
 }
 
-.nav-tagline {
-  font-size: 0.7rem;
-  color: var(--gray-color);
-  font-weight: 400;
-  margin-top: 0.25rem;
-}
-
 .nav-links {
   display: flex;
   align-items: center;
@@ -412,19 +405,37 @@ ul {
   color: var(--dark-color);
   padding-top: 60px;
   background: #ffffff; /* Reverted to white */
+  overflow: hidden;
+}
+
+#particles-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
 }
 
 .hero-content {
   position: relative;
   max-width: 900px;
   padding: 0 1.5rem; /* Adjusted for mobile */
+  z-index: 2;
 }
 
 .hero-title {
   font-size: 4rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
-  color: var(--dark-color); /* Reverted for white background */
+  color: var(--dark-color);
+}
+
+.highlight-orange {
+  background: linear-gradient(135deg, #FF8C00, #F97316);
+  -webkit-background-clip: text;
+  color: transparent;
+  white-space: nowrap; /* Prevent wrapping */
 }
 
 .hero-subtitle {
@@ -460,6 +471,7 @@ ul {
   cursor: pointer;
   animation: bounce 2s infinite;
   color: var(--dark-color); /* Reverted for white background */
+  z-index: 2;
 }
 
 .scroll-down span {
@@ -665,7 +677,7 @@ ul {
 
 .services-subsection .services-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(3, 1fr); /* Enforce 3 columns for larger screens */
   gap: 1.5rem; /* Reduced for mobile */
 }
 
@@ -1036,6 +1048,10 @@ ul {
   .footer-links {
     gap: 1rem;
   }
+  
+  .services-subsection .services-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on medium screens */
+  }
 }
 
 @media (max-width: 576px) {
@@ -1044,7 +1060,7 @@ ul {
   }
   
   .hero-title {
-    font-size: 2rem;
+    font-size: 1.8rem; /* Slightly reduced to fit better */
   }
   
   .hero-subtitle {
@@ -1059,10 +1075,6 @@ ul {
     align-items: center;
   }
   
-  .nav-tagline {
-    font-size: 0.65rem;
-  }
-  
   .nav-links li a {
     font-size: 0.9rem;
   }
@@ -1070,5 +1082,247 @@ ul {
   .nav-cta {
     padding: 0.75rem 1.5rem;
     font-size: 0.9rem;
+  }
+  
+  .services-subsection .services-grid {
+    grid-template-columns: 1fr; /* 1 column on small screens */
+  }
+}
+
+/* Portfolio Image Hover Overlay */
+.portfolio-img-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--border-radius);
+}
+
+.portfolio-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(37, 99, 235, 0.7);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+  padding: 1rem;
+}
+
+.portfolio-img-wrapper:hover .portfolio-overlay {
+  opacity: 1;
+}
+
+.portfolio-img-wrapper img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(37, 99, 235, 0.5);
+}
+
+/* Service Card Particles */
+.service-card {
+  position: relative;
+}
+
+.service-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.service-card:hover {
+  box-shadow: 0 0 15px rgba(37, 99, 235, 0.3);
+}
+
+/* Section Header Glow */
+.section-title.glow {
+  animation: glow 1.5s ease-in-out;
+}
+
+@keyframes glow {
+  0% {
+    text-shadow: none;
+  }
+  50% {
+    text-shadow: 0 0 15px rgba(37, 99, 235, 0.5);
+  }
+  100% {
+    text-shadow: none;
+  }
+}
+
+/* Navbar Pulse for WhatsApp CTA */
+.nav-cta.pulse {
+  animation: navPulse 2s infinite ease-in-out;
+}
+
+@keyframes navPulse {
+  0% {
+    box-shadow: 0 0 0 rgba(37, 99, 235, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(37, 99, 235, 0.7);
+  }
+  100% {
+    box-shadow: 0 0 0 rgba(37, 99, 235, 0.5);
+  }
+}
+
+/* Portfolio Image Hover Overlay */
+.portfolio-img-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--border-radius);
+}
+
+.portfolio-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(37, 99, 235, 0.7);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+  padding: 1rem;
+}
+
+.portfolio-img-wrapper:hover .portfolio-overlay {
+  opacity: 1;
+}
+
+.portfolio-img-wrapper img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(37, 99, 235, 0.5);
+}
+
+/* Service Card Holographic Effect */
+.service-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.service-card.holo-hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 0 30px rgba(37, 99, 235, 0.3);
+}
+
+.service-card.holo-hover .service-front,
+.service-card.holo-hover .service-back {
+  transform: scale(1.05);
+}
+
+.service-card.holo-hover .service-icon {
+  box-shadow: 0 0 15px rgba(37, 99, 235, 0.5);
+}
+
+.holo-border {
+  position: absolute;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+.holo-border-top, .holo-border-bottom {
+  width: 0;
+  height: 2px;
+}
+
+.holo-border-left, .holo-border-right {
+  width: 2px;
+  height: 0;
+}
+
+.holo-border-top {
+  top: 0;
+  left: 0;
+}
+
+.holo-border-right {
+  top: 0;
+  right: 0;
+}
+
+.holo-border-bottom {
+  bottom: 0;
+  right: 0;
+}
+
+.holo-border-left {
+  bottom: 0;
+  left: 0;
+}
+
+.service-card.holo-hover .holo-border-top {
+  width: 100%;
+  background: linear-gradient(90deg, transparent, #2563EB, transparent);
+  transition: width 0.4s ease;
+}
+
+.service-card.holo-hover .holo-border-right {
+  height: 100%;
+  background: linear-gradient(180deg, transparent, #2563EB, transparent);
+  transition: height 0.4s ease 0.2s;
+}
+
+.service-card.holo-hover .holo-border-bottom {
+  width: 100%;
+  background: linear-gradient(270deg, transparent, #2563EB, transparent);
+  transition: width 0.4s ease 0.4s;
+}
+
+.service-card.holo-hover .holo-border-left {
+  height: 100%;
+  background: linear-gradient(0deg, transparent, #2563EB, transparent);
+  transition: height 0.4s ease 0.6s;
+}
+
+/* Section Header Glow */
+.section-title.glow {
+  animation: glow 1.5s ease-in-out;
+}
+
+@keyframes glow {
+  0% {
+    text-shadow: none;
+  }
+  50% {
+    text-shadow: 0 0 15px rgba(37, 99, 235, 0.5);
+  }
+  100% {
+    text-shadow: none;
+  }
+}
+
+/* Navbar Pulse for WhatsApp CTA */
+.nav-cta.pulse {
+  animation: navPulse 2s infinite ease-in-out;
+}
+
+@keyframes navPulse {
+  0% {
+    box-shadow: 0 0 0 rgba(37, 99, 235, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(37, 99, 235, 0.7);
+  }
+  100% {
+    box-shadow: 0 0 0 rgba(37, 99, 235, 0.5);
   }
 }
