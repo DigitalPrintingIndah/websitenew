@@ -47,15 +47,17 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Mobile Menu Toggle
-  try {
+  document.addEventListener('DOMContentLoaded', function() {
+    // Mobile Menu Toggle
     const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
     const navLinks = document.querySelector('.nav-links');
+    
     if (mobileMenuToggle && navLinks) {
       mobileMenuToggle.addEventListener('click', function() {
         this.classList.toggle('active');
         navLinks.classList.toggle('active');
       });
-
+      
       document.querySelectorAll('.nav-links a').forEach(link => {
         link.addEventListener('click', function() {
           mobileMenuToggle.classList.remove('active');
@@ -63,9 +65,123 @@ document.addEventListener('DOMContentLoaded', function() {
         });
       });
     }
-  } catch (error) {
-    console.error('Mobile menu error:', error);
-  }
+    
+    // Sticky Navbar on Scroll
+    const navbar = document.querySelector('.navbar');
+    const whatsappBtn = document.querySelector('.whatsapp-btn');
+    
+    if (navbar) {
+      window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 50) {
+          navbar.classList.add('scrolled');
+          if (whatsappBtn) {
+            whatsappBtn.classList.add('pulse');
+          }
+        } else {
+          navbar.classList.remove('scrolled');
+          if (whatsappBtn) {
+            whatsappBtn.classList.remove('pulse');
+          }
+        }
+      });
+    }
+    
+    // Active Navigation Link on Scroll
+    const sections = document.querySelectorAll('section');
+    const navItems = document.querySelectorAll('.nav-links a');
+    
+    if (sections.length && navItems.length) {
+      window.addEventListener('scroll', function() {
+        let current = '';
+        const scrollPosition = window.pageYOffset;
+        
+        sections.forEach(section => {
+          const sectionTop = section.offsetTop - 100;
+          const sectionHeight = section.clientHeight;
+          const sectionBottom = sectionTop + sectionHeight;
+          
+          if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+            current = section.getAttribute('id');
+          }
+        });
+        
+        navItems.forEach(item => {
+          item.classList.remove('active');
+          if (item.getAttribute('href') === `#${current}`) {
+            item.classList.add('active');
+          }
+        });
+      });
+    }
+  });
+
+  // Active Navigation Link on Scroll
+function updateActiveNavItem() {
+  // Skip scroll-based updates if a click is in progress
+  if (clickInProgress) return;
+
+  const sections = document.querySelectorAll('section');
+  const navItems = document.querySelectorAll('.nav-links a');
+  if (!sections.length || !navItems.length) return;
+
+  let current = '';
+  const scrollPosition = window.pageYOffset + 150; // Adjusted offset for better detection
+
+  // Find the section currently in view
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop;
+    const sectionHeight = section.clientHeight;
+    const sectionBottom = sectionTop + sectionHeight;
+
+    if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+      current = section.getAttribute('id');
+    }
+  });
+
+  // Update the active nav item
+  navItems.forEach(item => {
+    item.classList.remove('active');
+    const href = item.getAttribute('href');
+    if (href === `#${current}` || (current === '' && href === '#home')) {
+      item.classList.add('active');
+    }
+  });
+}
+
+// Initialize scroll event listener
+window.addEventListener('scroll', updateActiveNavItem);
+
+// Smooth Scrolling for Anchor Links
+let clickInProgress = false;
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    const targetId = this.getAttribute('href');
+    if (targetId === '#') return;
+    
+    const targetElement = document.querySelector(targetId);
+    if (targetElement) {
+      const offset = 100; // Navbar height offset
+      const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+      const offsetPosition = elementPosition - offset;
+
+      clickInProgress = true; // Set flag to prevent scroll event interference
+
+      // Update active class immediately
+      const navItems = document.querySelectorAll('.nav-links a');
+      navItems.forEach(item => item.classList.remove('active'));
+      this.classList.add('active');
+
+      // Perform smooth scroll
+      smoothScrollTo(offsetPosition, 800);
+
+      // Reset flag after scroll completes
+      setTimeout(() => {
+        clickInProgress = false;
+      }, 850); // Slightly longer than scroll duration
+    }
+  });
+});
 
   // Sticky Navbar on Scroll with WhatsApp Pulse
   try {
@@ -114,90 +230,95 @@ document.addEventListener('DOMContentLoaded', function() {
     requestAnimationFrame(animation);
   }
 
-  // Smooth Scrolling for Anchor Links
-  try {
-    let clickInProgress = false;
-    let lastClickedSection = null;
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        const targetId = this.getAttribute('href');
-        if (targetId === '#') return;
-        const targetElement = document.querySelector(targetId);
-        if (targetElement) {
-          const offset = 100;
-          const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
-          const offsetPosition = elementPosition - offset;
+// Smooth Scrolling for Anchor Links
+try {
+  let clickInProgress = false;
+  let lastClickedSection = null;
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      const targetId = this.getAttribute('href');
+      if (targetId === '#') return;
+      const targetElement = document.querySelector(targetId);
+      if (targetElement) {
+        const offset = 100; // Navbar height offset
+        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+        const offsetPosition = elementPosition - offset;
 
-          clickInProgress = true;
-          lastClickedSection = targetId;
-          smoothScrollTo(offsetPosition, 800);
+        clickInProgress = true; // Set flag to prevent scroll event interference
+        lastClickedSection = targetId;
 
-          const navItems = document.querySelectorAll('.nav-links a');
-          navItems.forEach(item => item.classList.remove('active'));
-          this.classList.add('active');
+        // Update active class immediately
+        const navItems = document.querySelectorAll('.nav-links a');
+        navItems.forEach(item => item.classList.remove('active'));
+        this.classList.add('active');
 
-          setTimeout(() => {
-            clickInProgress = false;
-            lastClickedSection = null;
-          }, 800);
+        // Perform smooth scroll
+        smoothScrollTo(offsetPosition, 800);
+
+        // Reset flag after scroll completes
+        setTimeout(() => {
+          clickInProgress = false;
+          lastClickedSection = null;
+        }, 850); // Slightly longer than scroll duration to account for delays
+      }
+    });
+  });
+} catch (error) {
+  console.error('Smooth scroll error:', error);
+}
+
+// Active Navigation Link on Scroll
+try {
+  const sections = document.querySelectorAll('section');
+  const navItems = document.querySelectorAll('.nav-links a');
+  if (sections.length && navItems.length) {
+    window.addEventListener('scroll', function() {
+      // Skip scroll-based updates if a click is in progress
+      if (clickInProgress) return;
+
+      let current = '';
+      const scrollPosition = window.pageYOffset;
+
+      // Find the section currently in view
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - 150; // Increased offset for better detection
+        const sectionHeight = section.clientHeight;
+        const sectionBottom = sectionTop + sectionHeight;
+
+        if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      // Special handling for the "about" section due to its subsections
+      const aboutSection = document.querySelector('#about');
+      if (aboutSection) {
+        const aboutTop = aboutSection.offsetTop - 150;
+        const aboutHeight = aboutSection.clientHeight;
+        const aboutBottom = aboutTop + aboutHeight;
+        if (scrollPosition >= aboutTop && scrollPosition < aboutBottom) {
+          current = 'about';
+        }
+      }
+
+      // If at the top of the page, default to "home"
+      if (scrollPosition < sections[0].offsetTop - 150) {
+        current = 'home';
+      }
+
+      // Update the active nav item
+      navItems.forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('href') === `#${current}`) {
+          item.classList.add('active');
         }
       });
     });
-  } catch (error) {
-    console.error('Smooth scroll error:', error);
   }
-
-  // Active Navigation Link on Scroll
-  try {
-    const sections = document.querySelectorAll('section');
-    const navItems = document.querySelectorAll('.nav-links a');
-    if (sections.length && navItems.length) {
-      window.addEventListener('scroll', function() {
-        let current = '';
-        const scrollPosition = window.pageYOffset;
-
-        // Find the section currently in view
-        sections.forEach(section => {
-          const sectionTop = section.offsetTop - 100; // Adjust for navbar height
-          const sectionHeight = section.clientHeight;
-          const sectionBottom = sectionTop + sectionHeight;
-
-          // Check if the scroll position is within the section bounds
-          if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
-            current = section.getAttribute('id');
-          }
-        });
-
-        // Special handling for the "about" section due to its subsections
-        const aboutSection = document.querySelector('#about');
-        if (aboutSection) {
-          const aboutTop = aboutSection.offsetTop - 100;
-          const aboutHeight = aboutSection.clientHeight;
-          const aboutBottom = aboutTop + aboutHeight;
-          if (scrollPosition >= aboutTop && scrollPosition < aboutBottom) {
-            current = 'about';
-          }
-        }
-
-        // If at the top of the page, default to "home"
-        if (scrollPosition < sections[0].offsetTop - 100) {
-          current = 'home';
-        }
-
-        // Update the active nav item
-        navItems.forEach(item => {
-          item.classList.remove('active');
-          if (item.getAttribute('href') === `#${current}`) {
-            item.classList.add('active');
-        }
-        });
-      });
-    }
-  } catch (error) {
-    console.error('Nav active error:', error);
-  }
-
+} catch (error) {
+  console.error('Nav active error:', error);
+}
   // Initialize AOS
   try {
     if (typeof AOS !== 'undefined') {
@@ -406,140 +527,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   } catch (error) {
     console.error('Slick slider error:', error);
-  }
-
-  // Portfolio Filter with Stagger Animation and Hover Effects
-  try {
-    const portfolioCategories = document.querySelectorAll('.portfolio-categories li');
-    if (portfolioCategories.length) {
-      const portfolioData = {
-        billboard: {
-          title: "Billboard",
-          description: "Digital Printing Indah dipercaya oleh perusahaan-perusahaan besar untuk hasil cetakan Billboard berkualitas tinggi.",
-          images: [
-            { src: "assets/billboard1.jpg", desc: "Billboard Project 1" },
-            { src: "assets/billboard2.jpg", desc: "Billboard Project 2" },
-            { src: "assets/billboard3.jpg", desc: "Billboard Project 3" },
-            { src: "assets/billboard4.jpg", desc: "Billboard Project 4" },
-            { src: "assets/billboard5.jpg", desc: "Billboard Project 5" },
-            { src: "assets/billboard6.jpg", desc: "Billboard Project 6" }
-          ]
-        },
-        "billboard-backlite": {
-          title: "Billboard Backlite",
-          description: "Billboard dengan pencahayaan dari belakang, sangat cocok untuk promosi malam hari.",
-          images: [
-            { src: "assets/bb1.jpg", desc: "Billboard Backlite 1" },
-            { src: "assets/bb2.jpg", desc: "Billboard Backlite 2" }
-          ]
-        },
-        "one-way-vision": {
-          title: "One Way Vision",
-          description: "One Way Vision memberikan solusi branding pada kaca jendela tanpa mengurangi visibilitas dari dalam.",
-          images: [
-            { src: "assets/owv1.jpg", desc: "One Way Vision 1" },
-            { src: "assets/owv2.jpg", desc: "One Way Vision 2" }
-          ]
-        },
-        hoarding: {
-          title: "Hoarding",
-          description: "Hoarding digunakan untuk mempromosikan proyek besar seperti properti dan konstruksi.",
-          images: [
-            { src: "assets/h1.jpg", desc: "Hoarding 1" },
-            { src: "assets/h2.jpg", desc: "Hoarding 2" }
-          ]
-        },
-        jpo: {
-          title: "JPO (Jembatan Penyeberangan Orang)",
-          description: "Iklan di JPO sangat efektif untuk menarik perhatian pejalan kaki dan pengendara.",
-          images: [
-            { src: "assets/jpo1.jpg", desc: "JPO 1" },
-            { src: "assets/jpo2.jpg", desc: "JPO 2" }
-          ]
-        },
-        umbul: {
-          title: "Umbul",
-          description: "Umbul-umbul sangat cocok untuk promosi acara dan brand awareness.",
-          images: [
-            { src: "assets/umbul1.jpeg", desc: "Umbul 1" },
-            { src: "assets/umbul2.jpg", desc: "Umbul 2" }
-          ]
-        },
-        "sticker-cutting": {
-          title: "Sticker Cutting",
-          description: "Sticker Cutting untuk branding kendaraan, kaca, atau promosi lainnya.",
-          images: [
-            { src: "assets/s1.jpg", desc: "Sticker Cutting 1" }
-          ]
-        },
-        "roll-banner": {
-          title: "Roll Banner",
-          description: "Roll Banner adalah solusi portabel untuk promosi indoor dan outdoor.",
-          images: [
-            { src: "assets/roll1.jpg", desc: "Roll Banner 1" },
-            { src: "assets/roll2.jpg", desc: "Roll Banner 2" }
-          ]
-        },
-        "layanan-cetak-dokumen": {
-          title: "Layanan Cetak Dokumen",
-          description: "Kami juga menyediakan layanan cetak dokumen berkualitas tinggi untuk kebutuhan Anda.",
-          images: [
-            { src: "assets/l1.jpg", desc: "Document Printing 1" }
-          ]
-        }
-      };
-
-      function updatePortfolio(categoryId) {
-        const categoryData = portfolioData[categoryId];
-        document.getElementById('portfolio-title').textContent = categoryData.title;
-        document.getElementById('portfolio-description').textContent = categoryData.description;
-        const portfolioGrid = document.getElementById('portfolio-grid');
-        portfolioGrid.innerHTML = '';
-        categoryData.images.forEach((image, index) => {
-          const imgWrapper = document.createElement('div');
-          imgWrapper.classList.add('portfolio-img-wrapper');
-          
-          const imgElement = document.createElement('img');
-          imgElement.src = image.src;
-          imgElement.alt = categoryData.title;
-          imgElement.loading = 'lazy';
-          imgElement.style.opacity = '0';
-          imgElement.style.transform = 'translateY(20px)';
-          imgElement.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-          imgElement.style.transitionDelay = `${index * 0.1}s`;
-          
-          const overlay = document.createElement('div');
-          overlay.classList.add('portfolio-overlay');
-          overlay.textContent = image.desc;
-          
-          imgWrapper.appendChild(imgElement);
-          imgWrapper.appendChild(overlay);
-          portfolioGrid.appendChild(imgWrapper);
-          
-          setTimeout(() => {
-            imgElement.style.opacity = '1';
-            imgElement.style.transform = 'translateY(0)';
-          }, 50);
-        });
-      }
-
-      const defaultCategory = document.querySelector('.portfolio-categories li[data-category="billboard"]');
-      if (defaultCategory) {
-        defaultCategory.classList.add('active');
-        updatePortfolio('billboard');
-      }
-
-      portfolioCategories.forEach(category => {
-        category.addEventListener('click', function() {
-          portfolioCategories.forEach(cat => cat.classList.remove('active'));
-          this.classList.add('active');
-          const categoryId = this.getAttribute('data-category');
-          updatePortfolio(categoryId);
-        });
-      });
-    }
-  } catch (error) {
-    console.error('Portfolio filter error:', error);
   }
 
   // Typing Animation for Hero Subtitle
